@@ -1,37 +1,37 @@
-# knowledge-graph-rag
-Implementation of G-Retriever Graph RAG for optimized knowledgebase queries
+# Knowledge Graph RAG
 
-Create an environemtn and Install dependencies
+Implementation of G-Retriever Graph RAG for optimized knowledgebase queries.
+
+## Getting Started
+
+Create an environment and install dependencies:
+
+```bash
 conda create -n kb-grag python=3.11
 conda activate kb-grag
-`pip -m -r requirements.txt`
+pip install -r requirements.txt
+```
 
-## Acquiring the STaRK dataset
+## Acquiring the STaRK Dataset
 
-get_stark_data
-- Difficult to install locally. 
-- Spun up an ec2 instance to generate the data files
-- see instuctions to get data from stark-qa package
-stark_subsetter
-- script to subset the stark database for test cases
-load_stark_2_neo4j
--script to convert stark prime database to neo4j graph database
-stark_embedding
--script to embed neo4j nodes  
-subset qa dataset
--script to subset from the stark qa dataset for testing
-starkmini_query_embedding
--script to embed stark queries
+- **`get_stark_data.py`** — Difficult to install locally; spun up an EC2 instance to generate the data files. See instructions in the [stark-qa package](https://github.com/snap-stanford/STaRK) for obtaining data.
+- **`stark_subsetter.py`** — Script to subset the STaRK database for test cases.
+- **`load_stark_2_neo4j.py`** — Script to convert the STaRK Prime database into a Neo4j graph database.
+- **`stark_embedding.py`** — Script to generate embeddings for Neo4j nodes.
+- **`subset_qa_dataset.py`** — Script to subset the STaRK QA dataset for testing.
+- **`starkmini_query_embedding.py`** — Script to embed STaRK queries.
 
-## G-Retriever training
-generate training indice splits
--script to define training, validation, and test queries
-train.py
--script to get subgraphs and train vector and graph (GNN+LLM) RAG models
+## G-Retriever Training
 
-# Evaluation
+- **`generate_training_indice_splits.py`** — Script to define training, validation, and test query splits.
+- **`train.py`** — Script to extract subgraphs and train vector and graph (GNN + LLM) RAG models.
 
+## Evaluation
+
+*Coming soon.*
 
 ## Resources
-https://stark.stanford.edu/dataset_prime.html
-https://github.com/snap-stanford/STaRK
+
+- [STaRK Dataset (Prime)](https://stark.stanford.edu/dataset_prime.html)
+- [STaRK GitHub Repository](https://github.com/snap-stanford/STaRK)
+
