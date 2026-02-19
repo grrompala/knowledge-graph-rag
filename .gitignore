@@ -1,0 +1,7 @@
+__pycache__/
+base_subgraphs/
+splits/
+stark_qa_v0_0/
+stark_qa_data/
+stark_kb_data/
+.env
