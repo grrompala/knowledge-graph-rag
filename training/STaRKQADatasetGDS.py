@@ -13,7 +13,7 @@ from torch.utils.data import Dataset
 from torch_geometric.data import Data, InMemoryDataset
 from tqdm import tqdm
 
-from compute_metrics import compute_intermediate_metrics
+from evaluation.compute_metrics import compute_intermediate_metrics
 
 
 def get_nodes_by_vector_search(query_embedding: np.ndarray, k_nodes: int, driver: Driver) -> list[int]:
@@ -97,9 +97,9 @@ class STaRKQADataset(InMemoryDataset):
         self.raw_dataset = raw_dataset
         self.retrieval_config_version = retrieval_config_version
         self.algo_config_version = algo_config_version
-        base_dir = Path(__file__).parent
+        base_dir = Path(__file__).parent.parent
         print(base_dir)
-        self.query_embedding_dict = torch.load(base_dir / "query_emb_dict.pt")
+        self.query_embedding_dict = torch.load(base_dir / "stark_qa_data/query_emb_dict.pt")
 
         super().__init__(root, force_reload=force_reload)
 
@@ -206,4 +206,17 @@ class STaRKQADataset(InMemoryDataset):
             )
             retrieval_data.append(enriched_data)
         compute_intermediate_metrics(answer_ids, all_pcst_nodes)
+        pcst_output = {
+            "pcst_nodes": all_pcst_nodes,
+            "correct_nodes": answer_ids
+        }
+
+        pcst_output_path = os.path.join(
+            os.path.dirname(self.processed_paths[0]),
+            f"{self.split}_pcst_output.pt"
+        )
+
+        torch.save(pcst_output, pcst_output_path)
+        
         self.save(retrieval_data, self.processed_paths[0])
+

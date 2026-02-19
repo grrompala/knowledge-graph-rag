@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+"""
+Script to export STARK Prime knowledge base data and QA dataset.
+
+Dependencies:
+    - torch, pandas, stark-qa
+
+Environment Setup (e.g., on EC2 m4.xlarge instance):
+    apt update
+    apt install -y build-essential python3.11 python3.11-venv python3.11-dev git unzip zip
+    pip install stark-qa
+"""
+
+import torch
+import pandas as pd
+from stark_qa import load_skb
+
+# =============================================================================
+# 1. Load and Export the Semi-Structured Knowledge Base
+# =============================================================================
+
+dataset_name = "prime"
+
+# Load the STARK knowledge base (downloads pre-processed data if not cached)
+skb = load_skb(dataset_name, download_processed=True, root=None)
+
+# Package all graph components into a single dictionary for export
+export_data = {
+    "num_nodes": skb.num_nodes(),
+    "nodes": [skb[i].dictionary for i in range(skb.num_nodes())],
+    "node_type_dict": skb.node_type_dict,
+    "edge_index": skb.edge_index.cpu(),
+    "edge_types": skb.edge_types.cpu(),
+    "edge_type_dict": skb.edge_type_dict,
+}
+
+# Save the graph export to disk
+torch.save(export_data, "prime_graph_export.pt")
