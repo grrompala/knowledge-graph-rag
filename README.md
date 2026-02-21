@@ -28,10 +28,11 @@ pip install -r requirements.txt
 
 ## Evaluation
 
-*Coming soon.*
+<!-- TODO: Add descriptions for evaluation scripts once filenames are provided -->
 
 ## Resources
 
 - [STaRK Dataset (Prime)](https://stark.stanford.edu/dataset_prime.html)
 - [STaRK GitHub Repository](https://github.com/snap-stanford/STaRK)
+
 
