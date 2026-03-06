@@ -1,3 +1,5 @@
+# stopped at 38400 nodes
+
 from sentence_transformers import SentenceTransformer
 import neo4j
 import os
@@ -83,6 +85,7 @@ def build_stark_doc(node):
 def stream_nodes(batch_size=500):
     query = """
     MATCH (n:_Entity_)
+    WHERE n.textEmbedding IS NULL
     RETURN n.nodeId AS nodeId,
            n.name AS name,
            n.type AS type,
@@ -113,32 +116,24 @@ CALL db.create.setNodeVectorProperty(n, "textEmbedding", rec.textEmbedding)
 total_processed = 0
 
 for node_batch in stream_nodes(batch_size=512):
-
     node_ids = []
     texts = []
-
     for node in node_batch:
         if node["nodeId"] is None:
             continue
         node_ids.append(node["nodeId"])
         texts.append(build_stark_doc(node))
-
     if not texts:
         continue
-
     vectors = embedder.embed_documents(texts)
-
     emb_records = [
         {"nodeId": nid, "textEmbedding": vec.tolist()}
         for nid, vec in zip(node_ids, vectors)
     ]
-
     with driver.session(database=DATABASE) as session:
         session.run(write_query, {"recs": emb_records})
-
     total_processed += len(emb_records)
     print(f"Processed {total_processed} nodes")
-
 print("Embedding complete.")
 
 

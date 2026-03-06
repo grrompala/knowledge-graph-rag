@@ -1,9 +1,10 @@
+
 import os
 from pathlib import Path
-
+import torch
 import numpy as np
 import pandas as pd
-import torch
+
 import yaml
 from dotenv import load_dotenv
 from neo4j import Driver, GraphDatabase
@@ -122,7 +123,7 @@ class STaRKQADataset(InMemoryDataset):
         retrieval_data = []
 
         dataframe = self.raw_dataset.data.loc[self.raw_dataset.indices]
-        answer_ids = {index : eval(qa_row[2]) for index, qa_row in dataframe.iterrows()}
+        answer_ids = {index : eval(qa_row[2]) for index, qa_row in dataframe.iloc[:, :3].iterrows()}
 
         # Cypher query retrieval
         with open(f"configs/retrieval_config_v{self.retrieval_config_version}.yaml", "r") as f:
@@ -137,7 +138,7 @@ class STaRKQADataset(InMemoryDataset):
         else:
             print("Retrieve base subgraphs for each question...")
             base_subgraph = {}
-            for index, (question_id, _, _) in tqdm(dataframe.iterrows()):
+            for index, (question_id, _, _) in tqdm(dataframe.iloc[:, :3].iterrows()):
                 query_emb = self.query_embedding_dict[question_id].numpy()[0]
                 with GraphDatabase.driver(NEO4J_BOLT_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD)) as driver:
                     topk_node_ids = get_nodes_by_vector_search(query_emb, 25*cypher_config['k_nodes'], driver)[:cypher_config['k_nodes']]
@@ -160,7 +161,7 @@ class STaRKQADataset(InMemoryDataset):
             pcst_config = yaml.safe_load(f)
 
         all_pcst_nodes = {} # for metrics only
-        for index, (question_id, prompt, _) in tqdm(dataframe.iterrows()):
+        for index, (question_id, prompt, _) in tqdm(dataframe.iloc[:, :3].iterrows()):
             query_emb = self.query_embedding_dict[question_id].numpy()[0]
             nodes_df, relationships_df = base_subgraph[index]
 

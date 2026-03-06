@@ -18,7 +18,7 @@ from tqdm import tqdm
 from evaluation.compute_metrics import compute_metrics
 
 from training.STaRKQADatasetGDS import STaRKQADataset
-from training.STaRKQAVectorSearchDataset import STaRKQAVectorSearchDataset
+#from training.STaRKQAVectorSearchDataset import STaRKQAVectorSearchDataset
 import pandas as pd
 
 def get_loss(model, batch, model_save_name) -> Tensor:
@@ -92,7 +92,7 @@ def train(
             return [int(line.strip()) for line in f if line.strip()]
 
     
-    qa_dataset = pd.read_csv("stark_qa_data/stark_qa_final_enriched_starkmini.tsv",sep="\t")
+    qa_dataset = pd.read_csv("stark_qa_data/stark_qa_enriched.txt", sep="\t")
     train_indices = load_indices("splits/train.index")
     val_indices = load_indices("splits/val.index")
     test_indices = load_indices("splits/test.index")
@@ -152,8 +152,8 @@ def train(
     test_loader = DataLoader(test_dataset, batch_size=eval_batch_size,
                              drop_last=False, pin_memory=True, shuffle=False)
 ############ tiny test params #############
-    hidden_channels = 128
-    num_gnn_layers = 1
+    # hidden_channels = 128
+    # num_gnn_layers = 1
  ##########################################
     
     gnn = GAT(
@@ -206,10 +206,10 @@ def train(
     grad_steps = 2
 
     ################################# tiny test ##################################
-    lr = 1e-5
-    num_epochs = 1
-    checkpointing = False
-    grad_steps = 1
+    # lr = 1e-5
+    # num_epochs = 1
+    # checkpointing = False
+    # grad_steps = 1
     #################################
 
     best_epoch = 0

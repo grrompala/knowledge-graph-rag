@@ -1,9 +1,10 @@
+import torch
 import os
 from typing import List
 
 import numpy as np
 import pandas as pd
-import torch
+
 from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
 from neo4j import Driver, GraphDatabase
